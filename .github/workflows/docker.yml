@@ -21,11 +21,13 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          repository: faddat/blogdemo
 
       - name: Build and push blockchain
-        run: docker buildx build --tag ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo --file Dockerfile --platform linux/amd64,linux/arm64 --cache-from ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo:cache --cache-to ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo:cache --push --progress tty .
+        run: docker buildx build --tag ${{ github.actor }}/blogdemo --file Dockerfile --platform linux/amd64,linux/arm64 --cache-from ${{ github.actor }}/blogdemo:cache --cache-to ${{ github.actor }}/blogdemo:cache --push --progress tty .
 
       - name: Build and push UI
-        run: docker buildx build --tag ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo-ui --file vue/Dockerfile --platform linux/amd64,linux/arm64 --cache-from ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo-ui:cache --cache-to ${{ secrets.DOCKERHUB_USERNAME }}/blogdemo-ui:cache --push --progress tty ./vue
+        run: docker buildx build --tag ${{ github.actor }}/blogdemo-ui --file vue/Dockerfile --platform linux/amd64,linux/arm64 --cache-from ${{ github.actor }}/blogdemo-ui:cache --cache-to ${{ github.actor }}/blogdemo-ui:cache --push --progress tty ./vue
